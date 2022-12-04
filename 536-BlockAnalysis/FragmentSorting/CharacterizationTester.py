@@ -12,8 +12,8 @@ from FragmentSorting.Statistics import StatisticsCounter
 from scipy.spatial import distance
 
 # Parameters
-NUM_PDF = 10         # How many PDF should be tested
-NUM_JPG = 1000        # How many JPG should be tested
+NUM_PDF = 20         # How many PDF should be tested
+NUM_JPG = 1200        # How many JPG should be tested
 
 def ngram_characterize(bytestring, n):
     """
@@ -110,11 +110,22 @@ true_pdf = StatisticsCounter()
 false_pdf = StatisticsCounter()
 true_jpg = StatisticsCounter()
 false_jpg = StatisticsCounter()
+
+correct_pdf = 0
+incorrect_pdf = 0
+correct_jpg = 0
+incorrect_jpg = 0
+other = 0
+
+pdf_cutoff = 0.27
+jpg_cutoff = 0.17
+
 for sample in test_set:
     # Calculate cosine distance from both pdf and jpg
     pdf_dist = distance.euclidean(sample[1], pdf_mean)
     jpg_dist = distance.euclidean(sample[1], jpg_mean)
 
+    # Profiling Data
     if sample[0] == "pdf":
         true_pdf.add_sample(pdf_dist)
         false_jpg.add_sample(jpg_dist)
@@ -122,19 +133,51 @@ for sample in test_set:
         true_jpg.add_sample(jpg_dist)
         false_pdf.add_sample(pdf_dist)
 
+    # Classify
+    is_pdf = pdf_dist <= pdf_cutoff
+    is_jpg = jpg_dist <= jpg_cutoff
+    if is_pdf and is_jpg:           # If both classifiers were active, pick the lower distance one
+        if jpg_dist < pdf_dist:
+            is_pdf = False
+        else:
+            is_jpg = False
+
+    if is_pdf:                      # Classified as PDF
+        if sample[0] == "pdf":
+            correct_pdf += 1
+        else:
+            incorrect_pdf += 1
+    elif is_jpg:                    # Classified as JPG
+        if sample[0] == "jpg":
+            correct_jpg += 1
+        else:
+            incorrect_jpg += 1
+    else:                           # Classified as neither
+        other += 1
+
 print("true PDF: " + str(true_pdf))
 print("false PDF: " + str(false_pdf))
 print("true JPG: " + str(true_jpg))
 print("false JPG: " + str(false_jpg))
+print()
+print("PDF Cutoff: " + str(pdf_cutoff) + " JPG Cutoff: " + str(jpg_cutoff))
+print("Correct PDF Classifications: " + str(correct_pdf))
+print("Correct JPG Classifications: " + str(correct_jpg))
+print("Incorrect PDF Classifications: " + str(incorrect_pdf))
+print("Incorrect JPG Classifications: " + str(incorrect_jpg))
+print("Other classifications: " + str(other))
+print("PDF Accuracy: " + str(correct_pdf / pdf_count))
+print("JPG Accuracy: " + str(correct_jpg / jpg_count))
+print()
 
-fig, axs = plt.subplots(4, sharex=True)
-fig.suptitle("Euclidean Distance Histograms")
-axs[0].title.set_text("True PDF")
-axs[0].hist(np.array(true_pdf.values), bins=150)
-axs[1].title.set_text("False PDF")
-axs[1].hist(np.array(false_pdf.values), bins=150)
-axs[2].title.set_text("True JPG")
-axs[2].hist(np.array(true_jpg.values), bins=150)
-axs[3].title.set_text("False JPG")
-axs[3].hist(np.array(false_jpg.values), bins=150)
-plt.show()
+# fig, axs = plt.subplots(4, sharex=True)
+# fig.suptitle("Euclidean Distance Histograms")
+# axs[0].title.set_text("True PDF")
+# axs[0].hist(np.array(true_pdf.values), bins=150)
+# axs[1].title.set_text("False PDF")
+# axs[1].hist(np.array(false_pdf.values), bins=150)
+# axs[2].title.set_text("True JPG")
+# axs[2].hist(np.array(true_jpg.values), bins=150)
+# axs[3].title.set_text("False JPG")
+# axs[3].hist(np.array(false_jpg.values), bins=150)
+# plt.show()
