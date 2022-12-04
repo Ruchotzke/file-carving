@@ -3,6 +3,7 @@ from HeaderAnalysis.signature_object import SignatureObject
 
 # BEWARE: ZIP TRAILER HAS BEEN ALTERED. DOUBLE CHECK IT
 
+SIGNATURES_PATH = "./HeaderAnalysis/file_sigs.json"     # The path to the file signatures object
 
 class SigReader:
     def __init__(self):
@@ -10,7 +11,7 @@ class SigReader:
         Generate a signature reader object.
         """
         # Load the signature PDF_Data into memory
-        sig_file = open("./Carving/file_sigs.json", "r")
+        sig_file = open(SIGNATURES_PATH, "r")
         sig_dict = json.load(sig_file)
         sig_file.close()
 
