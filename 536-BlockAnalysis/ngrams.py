@@ -74,30 +74,54 @@ mean = np.mean(stacked, axis=1)     # the mean of the distribution (centroid)
 cov = np.cov(stacked)               # the covariance matrix of the distribution (for distance measurement)
 inverse = np.linalg.inv(cov)        # the inverse of the covariance matrix (used for Mahalanobis)
 
-print(mean.shape)
-print(out[0].shape)
-
 # Print some distances
+test_point = np.random.rand(256)
+for i in range(0, 256):
+    test_point[i] = int(2 * test_point[i])
+print("random = " + str(distance.cosine(mean, test_point)))
+
 test_point = out[0]
-print(distance.mahalanobis(mean, test_point, inverse))
+print(distance.cosine(mean, test_point))
 test_point = out[1]
-print(distance.mahalanobis(test_point, mean, inverse))
+print(distance.cosine(test_point, mean))
 test_point = out[2]
-print(distance.mahalanobis(test_point, mean, inverse))
+print(distance.cosine(test_point, mean))
 test_point = out[3]
-print(distance.mahalanobis(test_point, mean, inverse))
+print(distance.cosine(test_point, mean))
 test_point = out[4]
-print(distance.mahalanobis(test_point, mean, inverse))
+print(distance.cosine(test_point, mean))
 test_point = out[5]
-print(distance.mahalanobis(test_point, mean, inverse))
+print(distance.cosine(test_point, mean))
 test_point = out[6]
-print(distance.mahalanobis(test_point, mean, inverse))
+print(distance.cosine(test_point, mean))
 test_point = out[7]
-print(distance.mahalanobis(test_point, mean, inverse))
+print(distance.cosine(test_point, mean))
 test_point = out[8]
-print(distance.mahalanobis(test_point, mean, inverse))
+print(distance.cosine(test_point, mean))
 test_point = out[9]
-print(distance.mahalanobis(test_point, mean, inverse))
+print(distance.cosine(test_point, mean))
+
+# # Print some distances
+# test_point = out[0]
+# print(distance.mahalanobis(mean, test_point, inverse))
+# test_point = out[1]
+# print(distance.mahalanobis(test_point, mean, inverse))
+# test_point = out[2]
+# print(distance.mahalanobis(test_point, mean, inverse))
+# test_point = out[3]
+# print(distance.mahalanobis(test_point, mean, inverse))
+# test_point = out[4]
+# print(distance.mahalanobis(test_point, mean, inverse))
+# test_point = out[5]
+# print(distance.mahalanobis(test_point, mean, inverse))
+# test_point = out[6]
+# print(distance.mahalanobis(test_point, mean, inverse))
+# test_point = out[7]
+# print(distance.mahalanobis(test_point, mean, inverse))
+# test_point = out[8]
+# print(distance.mahalanobis(test_point, mean, inverse))
+# test_point = out[9]
+# print(distance.mahalanobis(test_point, mean, inverse))
 
 # # Graph the file characterization
 # for char in range(3, 6):
